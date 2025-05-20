@@ -1,13 +1,5 @@
 pipeline {
     agent any
-    options {
-        skipStagesAfterUnstable()
-    }
-
-    tools {
-        jdk 'jdk-17' // Replace with the exact name from your Jenkins config
-    }
-
     environment {
         MAVEN_HOME = 'C:\\apache-maven-3.9.9'
     }
