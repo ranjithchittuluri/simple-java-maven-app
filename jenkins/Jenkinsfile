@@ -1,10 +1,22 @@
 pipeline {
     agent any
+
+    options {
+        skipStagesAfterUnstable()
+    }
+
     environment {
         MAVEN_HOME = 'C:\\apache-maven-3.9.9'
+        GIT_URL = 'https://github.com/jenkins-docs/simple-java-maven-app.git'
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: "${env.GIT_URL}"
+            }
+        }
+
         stage('Build') {
             steps {
                 bat "\"%MAVEN_HOME%\\bin\\mvn\" -B -DskipTests clean package"
@@ -17,16 +29,26 @@ pipeline {
             }
             post {
                 always {
-                    junit 'target\\surefire-reports\\*.xml' // Use Windows path separators
+                    junit 'target\\surefire-reports\\*.xml'
                 }
             }
         }
 
         stage('Deliver') {
             steps {
-                // Assumes you have a Windows-compatible script in the repo
-                bat "call jenkins\\scripts\\deliver.bat"
+                bat '''
+                    echo Delivering the application...
+                    if not exist C:\\deploy-folder mkdir C:\\deploy-folder
+                    copy target\\*.jar C:\\deploy-folder\\
+                    echo Delivery completed. Files copied to C:\\deploy-folder
+                '''
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution complete.'
         }
     }
 }
