@@ -33,7 +33,7 @@ pipeline {
         stage('Deliver') {
             steps {
                 bat '''
-                    echo Delivering the application...
+                    echo Delivering the application.....
                     if not exist C:\\deploy-folder mkdir C:\\deploy-folder
                     copy target\\*.jar C:\\deploy-folder\\
                     echo Delivery completed. Files copied to C:\\deploy-folder
